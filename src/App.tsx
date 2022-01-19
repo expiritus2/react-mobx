@@ -1,26 +1,29 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import TodoInput from './Todo/TodoInput';
+import TodoList from './Todo/TodoList';
+import styles from './App.module.css';
+import { observer, useLocalObservable } from 'mobx-react-lite';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const App = () => {
+    const appUI = useLocalObservable(() => ({
+        todosVisible: true,
+        toggleTodoVisibility() {
+            appUI.todosVisible = !appUI.todosVisible;
+        }
+    }));
+
+    return (
+        <div className="app">
+            <TodoInput/>
+            <div className={styles['todo-list-wrapper']}>
+                <h2 onClick={appUI.toggleTodoVisibility}>
+                    <span>{appUI.todosVisible ? '-' : '+'}</span>
+                    Todos
+                </h2>
+                {appUI.todosVisible && <TodoList/>}
+            </div>
+        </div>
+    );
 }
 
-export default App;
+export default observer(App);
